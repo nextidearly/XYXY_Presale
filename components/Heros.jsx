@@ -175,7 +175,7 @@ function Heros() {
                   className="info s-font"
                 >
                   Balance :{" "}
-                  {Math.round(Number(balance.formatted) * 100000) / 100000}{" "}
+                  {Math.round(Number(balance.formatted) * 100000) / 100000}
                   {balance.symbol}
                 </div>
               </div>
