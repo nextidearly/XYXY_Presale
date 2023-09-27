@@ -80,16 +80,13 @@ function Heros() {
       );
       getTokenBalance(address);
     } catch (error) {
-      enqueueSnackbar(
-        `${error?.data?.message}`,
-        {
-          variant: "info",
-          autoHideDuration: 3000,
-          style: {
-            backgroundColor: "#a31313",
-          },
-        }
-      );
+      enqueueSnackbar(`${error?.data?.message}`, {
+        variant: "info",
+        autoHideDuration: 3000,
+        style: {
+          backgroundColor: "#a31313",
+        },
+      });
       setLoadingTx(false);
     }
   };
@@ -163,191 +160,171 @@ function Heros() {
             </Container>
           </Navbar>
         </div>
-        <div className="gradient1"></div>
-        <div className="noise"></div>
         <div className="gradient">
           <div>
             <h1>PRESALE</h1>
           </div>
         </div>
-
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "8em",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <div className="swap-container">
-              <div className="input-first">
-                <div className="input-label">
-                  <div className="info s-font">Enter amount</div>
-                  <div
-                    style={{ color: "white", fontSize: "10px" }}
-                    className="info s-font"
-                  >
-                    Balance :{" "}
-                    {Math.round(Number(balance.formatted) * 100000) / 100000}{" "}
-                    {balance.symbol}
-                  </div>
-                </div>
-                <div className="input-group-inline">
-                  <input
-                    className="input-text"
-                    type="number"
-                    value={amount}
-                    onKeyPress={(e) => {
-                      if (e.key === "-" || e.key === "e") {
-                        e.preventDefault();
-                      }
-                    }}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="0.0"
-                    min={0}
-                  />
-                  <span>
-                    <img
-                      src={LOGOS[currentChain?.id] || "/assets/eth.png"}
-                      className="eth"
-                      alt="logo"
-                    />
-                  </span>
+        <div style={{ display: "flex", alignItems: "center", paddingTop: '120px', paddingBottom: '60px' }}>
+          <div className="swap-container">
+            <div className="input-first">
+              <div className="input-label">
+                <div className="info s-font">Enter amount</div>
+                <div
+                  style={{ color: "white", fontSize: "10px" }}
+                  className="info s-font"
+                >
+                  Balance :{" "}
+                  {Math.round(Number(balance.formatted) * 100000) / 100000}{" "}
+                  {balance.symbol}
                 </div>
               </div>
-
-              <div className="input-first">
-                <div className="input-label">
-                  <div className="info s-font">Recieve</div>
-                  <div
-                    style={{ color: "white", fontSize: "10px" }}
-                    className="info s-font"
-                  >
-                    Balance : 0 XYXY
-                  </div>
-                </div>
-                <div className="input-group-inline">
-                  <input
-                    className="input-text"
-                    type="number"
-                    value={xyxy}
-                    onKeyPress={(e) => {
-                      if (e.key === "-" || e.key === "e") {
-                        e.preventDefault();
-                      }
-                    }}
-                    onChange={(e) => setAmount2(e.target.value)}
-                    placeholder="0.0"
-                    min={0}
-                  />
-                  <span>
-                    <img src="/assets/XYXY.png" className="eth" alt="logo" />
-                  </span>
-                </div>
-              </div>
-
-              <div className="detailBox">
-                <div
-                  style={{ color: "white", fontSize: "10px" }}
-                  className="info s-font"
-                >
-                  <span className="b-info">Exchange Rate</span>
-                  <span>
-                    1 {balance?.symbol} to{" "}
-                    {CURRENCYS[currentChain?.id] / TOKEN_PRICE} XYXY TOKEN
-                  </span>
-                </div>
-
-                <div
-                  style={{ color: "white", fontSize: "10px" }}
-                  className="info s-font"
-                >
-                  <span className="b-info">Max Supply</span>
-                  <span>100,000,000 XYXY TOKEN</span>
-                </div>
-                <div
-                  style={{ color: "white", fontSize: "10px" }}
-                  className="info s-font"
-                >
-                  <span className="b-info">Softcap</span>
-                  <span>50 ETH</span>
-                </div>
-                <div
-                  style={{ color: "white", fontSize: "10px" }}
-                  className="info s-font"
-                >
-                  <span className="b-info">ETH Total raised</span>
-                  <span>{totalRaisedETH} ETH</span>
-                </div>
-                <div
-                  style={{ color: "white", fontSize: "10px" }}
-                  className="info s-font"
-                >
-                  <span className="b-info">BNB Total raised</span>
-                  <span>{totalRaisedBNB} BNB</span>
-                </div>
-                <div
-                  style={{ color: "white", fontSize: "10px" }}
-                  className="info s-font"
-                >
-                  <span className="b-info">MATIC Total raised</span>
-                  <span>{totalRaisedMATIC} MATIC</span>
-                </div>
-                <hr className="divider" />
-                <div
-                  style={{ color: "white", fontSize: "10px" }}
-                  className="info s-font"
-                >
-                  <span className="b-info">Total raised</span>
-                  <span>
-                    ~${" "}
-                    {totalRaisedETH * 1590 +
-                      totalRaisedBNB * 2121 +
-                      totalRaisedMATIC * 0.5}
-                  </span>
-                </div>
-              </div>
-              {/* <CountDownComponent  targetBlockTime={"2023-11-29T07:00:00-08:00"}/> */}
-              <div className="button-section">
-                <button
-                  className="buy-button"
-                  disabled={
-                    balance?.formatted === "0" ||
-                    !isConnected ||
-                    insufficient ||
-                    amount === ""
-                  }
-                  onClick={handleBuyWithCoin}
-                >
-                  {!insufficient ? "Buy" : "Insufficient Balance"}
-                </button>
-                <button
-                  disabled
-                  className="buy-button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    claimFunction();
+              <div className="input-group-inline">
+                <input
+                  className="input-text"
+                  type="number"
+                  value={amount}
+                  onKeyPress={(e) => {
+                    if (e.key === "-" || e.key === "e") {
+                      e.preventDefault();
+                    }
                   }}
-                >
-                  Claim
-                </button>
-                <button disabled className="buy-button">
-                  refund
-                </button>
+                  onChange={(e) => setAmount(e.target.value)}
+                  placeholder="0.0"
+                  min={0}
+                />
+                <span>
+                  <img
+                    src={LOGOS[currentChain?.id] || "/assets/eth.png"}
+                    className="eth"
+                    alt="logo"
+                  />
+                </span>
               </div>
+            </div>
+
+            <div className="input-first">
+              <div className="input-label">
+                <div className="info s-font">Recieve</div>
+                <div
+                  style={{ color: "white", fontSize: "10px" }}
+                  className="info s-font"
+                >
+                  Balance : 0 XYXY
+                </div>
+              </div>
+              <div className="input-group-inline">
+                <input
+                  className="input-text"
+                  type="number"
+                  value={xyxy}
+                  onKeyPress={(e) => {
+                    if (e.key === "-" || e.key === "e") {
+                      e.preventDefault();
+                    }
+                  }}
+                  onChange={(e) => setAmount2(e.target.value)}
+                  placeholder="0.0"
+                  min={0}
+                />
+                <span>
+                  <img src="/assets/XYXY.png" className="eth" alt="logo" />
+                </span>
+              </div>
+            </div>
+
+            <div className="detailBox">
+              <div
+                style={{ color: "white", fontSize: "10px" }}
+                className="info s-font"
+              >
+                <span className="b-info">Exchange Rate</span>
+                <span>
+                  1 {balance?.symbol} to{" "}
+                  {CURRENCYS[currentChain?.id] / TOKEN_PRICE} XYXY TOKEN
+                </span>
+              </div>
+
+              <div
+                style={{ color: "white", fontSize: "10px" }}
+                className="info s-font"
+              >
+                <span className="b-info">Max Supply</span>
+                <span>100,000,000 XYXY TOKEN</span>
+              </div>
+              <div
+                style={{ color: "white", fontSize: "10px" }}
+                className="info s-font"
+              >
+                <span className="b-info">Softcap</span>
+                <span>50 ETH</span>
+              </div>
+              <div
+                style={{ color: "white", fontSize: "10px" }}
+                className="info s-font"
+              >
+                <span className="b-info">ETH Total raised</span>
+                <span>{totalRaisedETH} ETH</span>
+              </div>
+              <div
+                style={{ color: "white", fontSize: "10px" }}
+                className="info s-font"
+              >
+                <span className="b-info">BNB Total raised</span>
+                <span>{totalRaisedBNB} BNB</span>
+              </div>
+              <div
+                style={{ color: "white", fontSize: "10px" }}
+                className="info s-font"
+              >
+                <span className="b-info">MATIC Total raised</span>
+                <span>{totalRaisedMATIC} MATIC</span>
+              </div>
+              <hr className="divider" />
+              <div
+                style={{ color: "white", fontSize: "10px" }}
+                className="info s-font"
+              >
+                <span className="b-info">Total raised</span>
+                <span>
+                  ~${" "}
+                  {totalRaisedETH * 1590 +
+                    totalRaisedBNB * 2121 +
+                    totalRaisedMATIC * 0.5}
+                </span>
+              </div>
+            </div>
+            {/* <CountDownComponent  targetBlockTime={"2023-11-29T07:00:00-08:00"}/> */}
+            <div className="button-section">
+              <button
+                className="buy-button"
+                disabled={
+                  balance?.formatted === "0" ||
+                  !isConnected ||
+                  insufficient ||
+                  amount === ""
+                }
+                onClick={handleBuyWithCoin}
+              >
+                {!insufficient ? "Buy" : "Insufficient Balance"}
+              </button>
+              <button
+                disabled
+                className="buy-button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  claimFunction();
+                }}
+              >
+                Claim
+              </button>
+              <button disabled className="buy-button">
+                refund
+              </button>
             </div>
           </div>
         </div>
       </div>
-      <div
-        id="background-radial-gradient"
-        style={{
-          width: "200vw",
-          height: "200vh",
-          transform: "translate(-50vw, -100vh)",
-          background: "linear-gradient(rgb(32, 39, 56) 0%, rgb(7, 8, 22) 100%)",
-        }}
-      ></div>
     </>
   );
 }
