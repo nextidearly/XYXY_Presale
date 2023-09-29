@@ -433,6 +433,17 @@ a {
   height: 60px;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 /* input */
 .input-text {
   font-family: "BaseNeueBold";
