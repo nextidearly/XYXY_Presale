@@ -224,6 +224,12 @@ function Airdrop() {
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="me-auto">
+                  <div className="links-div">
+                    <Nav.Link href="/">presale</Nav.Link>
+                  </div>
+                  <div className="links-div">
+                    <Nav.Link href="/airdrop">Airdrop</Nav.Link>
+                  </div>
                   <ConnectModal />
                 </Nav>
               </Navbar.Collapse>

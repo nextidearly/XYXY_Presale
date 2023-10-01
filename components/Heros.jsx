@@ -2,20 +2,17 @@ import React, { useEffect, useState } from "react";
 import ConnectModal from "./Connect/ConnectModal";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { TREASURY, LOGOS, TOKEN_PRICE, CURRENCYS } from "../environment/config";
-import { useAccount, useBalance, useNetwork } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
-// import dynamic from "next/dynamic";
-// const CountDownComponent = dynamic(() => import("../components/CountDown"), {
-//   ssr: false,
-// });
+import { ref, push, query, onValue, update, get } from "firebase/database";
+import { db } from "@/lib/firebase";
 
 function Heros() {
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
-  const data = useBalance({ address: address, chainId: chain?.id, });
   const { enqueueSnackbar } = useSnackbar();
-  const [type, setType] = useState("ETH");
+
   const [totalRaisedETH, setTotalRaisedETH] = useState(0);
   const [totalRaisedBNB, setTotalRaisedBNB] = useState(0);
   const [totalRaisedMATIC, setTotalRaisedMATIC] = useState(0);
@@ -35,7 +32,9 @@ function Heros() {
 
   const handleChangeAmount = (amount) => {
     setEth(amount);
-    setXyxy((Number(amount) * CURRENCYS[currentChain?.id]) / TOKEN_PRICE || "");
+    setXyxy(
+      (Number(amount) * CURRENCYS[currentChain?.id]) / Number(TOKEN_PRICE) || ""
+    );
   };
 
   const handleChangeXyxy = (amount2) => {
@@ -53,41 +52,113 @@ function Heros() {
     try {
       const transactionHash = await walletSigner.sendTransaction({
         to: TREASURY,
-        value: ethers.utils.parseEther("0.05"),
+        value: ethers.utils.parseEther(amount.toString()),
       });
 
       enqueueSnackbar(
         `Transaction has been submited. Tx hash: ${transactionHash.hash}`,
         {
           variant: "info",
-          autoHideDuration: 5000,
+          autoHideDuration: 3000,
           style: {
             backgroundColor: "#202946",
           },
         }
       );
       const receipt = await transactionHash.wait();
-      setLoadingTx(false);
+
       enqueueSnackbar(
         `Transaction has been confirmed. Tx hash: ${receipt.transactionHash}`,
         {
           variant: "info",
-          autoHideDuration: 5000,
+          autoHideDuration: 3000,
           style: {
-            backgroundColor: "#202946",
+            backgroundColor: "#06ed4f",
           },
         }
       );
-      getTokenBalance(address);
+
+      const dbRef = ref(db, "/transactions");
+      push(dbRef, {
+        address: address,
+        amount: amount,
+        symbol: balance.symbol,
+        withdrow: xyxy,
+      })
+        .then(() => {
+          const dbQuery = query(ref(db, "stats"));
+
+          get(dbQuery).then((snapshot) => {
+            const exist = snapshot.val();
+            if (exist) {
+              const dbRef = ref(db, `/stats/${Object.keys(exist)[0]}`);
+              if (balance.symbol === "ETH") {
+                update(dbRef, {
+                  eth: exist[Object.keys(exist)[0]].eth + Number(amount),
+                  bsc: exist[Object.keys(exist)[0]].bsc,
+                  matic: exist[Object.keys(exist)[0]].matic,
+                });
+                return;
+              }
+
+              if (balance.symbol === "MATIC") {
+                update(dbRef, {
+                  matic: exist[Object.keys(exist)[0]].matic + Number(amount),
+                  bsc: exist[Object.keys(exist)[0]].bsc,
+                  eth: exist[Object.keys(exist)[0]].eth,
+                });
+                return;
+              }
+
+              if (balance.symbol === "BNB") {
+                update(dbRef, {
+                  bsc: exist[Object.keys(exist)[0]].bsc + Number(amount),
+                  matic: exist[Object.keys(exist)[0]].matic,
+                  eth: exist[Object.keys(exist)[0]].eth,
+                });
+                return;
+              }
+            }
+          });
+
+          setLoadingTx(false);
+          setAmount("");
+          setXyxy("");
+          setEth("");
+        })
+        .catch((error) => {
+          console.error("Error saving transaction:", error);
+        });
+      getBalance();
     } catch (error) {
-      enqueueSnackbar(`${error?.data?.message}`, {
-        variant: "info",
-        autoHideDuration: 3000,
-        style: {
-          backgroundColor: "#a31313",
-        },
-      });
+      if (error?.data?.message) {
+        enqueueSnackbar(`${error?.data?.message}`, {
+          variant: "info",
+          autoHideDuration: 3000,
+          style: {
+            backgroundColor: "#a31313",
+          },
+        });
+      }
+
       setLoadingTx(false);
+    }
+  };
+
+  const getBalance = async () => {
+    if (window.ethereum && address) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const value = await provider.getBalance(address);
+      const data = ethers.utils.formatUnits(value, 18);
+      const currency =
+        chain.id === 56 ? "BNB" : chain.id === 137 ? "MATIC" : "ETH";
+
+      setBalance({
+        decimals: 18,
+        formatted: data,
+        symbol: currency,
+        value: 0,
+      });
     }
   };
 
@@ -98,19 +169,6 @@ function Heros() {
   useEffect(() => {
     handleChangeXyxy(amount2);
   }, [amount2]);
-
-  useEffect(() => {
-    if (data) {
-      setBalance(data);
-    } else {
-      setBalance({
-        decimals: 18,
-        formatted: "0",
-        symbol: "ETH",
-        value: 0,
-      });
-    }
-  }, [data]);
 
   useEffect(() => {
     if (balance?.decimals) {
@@ -124,25 +182,31 @@ function Heros() {
   }, [eth]);
 
   useEffect(() => {
-    setAmount("");
-    setAmount2("");
-    setCurrentChain(chain);
-  }, [chain]);
+    if (chain?.id && address) {
+      setCurrentChain(chain);
+      setAmount("");
+      setAmount2("");
+      getBalance(chain);
+    }
+  }, [chain, address]);
 
   useEffect(() => {
-    const interval = setInterval(async () => {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const balance2 = await provider?.getBalance(TREASURY);
-      const value2 = ethers.utils.formatUnits(balance2, 18);
-      setTotalRaisedETH(value2);
-    }, 10000);
+    const interval = setInterval(() => {
+      const dbQuery = query(ref(db, "stats"));
+      onValue(dbQuery, async (snapshot) => {
+        const exist = snapshot.val();
+        if (exist) {
+          setTotalRaisedBNB(Number(exist[Object.keys(exist)[0]].bnb || 0));
+          setTotalRaisedETH(Number(exist[Object.keys(exist)[0]].eth || 0));
+          setTotalRaisedMATIC(Number(exist[Object.keys(exist)[0]].matic || 0));
+        }
+      });
+    }, 3000);
 
     return () => {
       clearInterval(interval);
     };
   }, []);
-
-  console.log(data)
 
   return (
     <>
@@ -156,6 +220,12 @@ function Heros() {
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="me-auto">
+                  <div className="links-div">
+                    <Nav.Link href="/">presale</Nav.Link>
+                  </div>
+                  <div className="links-div">
+                    <Nav.Link href="/airdrop">Airdrop</Nav.Link>
+                  </div>
                   <ConnectModal />
                 </Nav>
               </Navbar.Collapse>
@@ -167,7 +237,14 @@ function Heros() {
             <h1>PRESALE</h1>
           </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", paddingTop: '120px', paddingBottom: '60px' }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            paddingTop: "120px",
+            paddingBottom: "60px",
+          }}
+        >
           <div className="swap-container">
             <div className="input-first">
               <div className="input-label">
@@ -298,18 +375,30 @@ function Heros() {
             </div>
             {/* <CountDownComponent  targetBlockTime={"2023-11-29T07:00:00-08:00"}/> */}
             <div className="button-section">
-              <button
-                className="buy-button"
-                disabled={
-                  balance?.formatted === "0" ||
-                  !isConnected ||
-                  insufficient ||
-                  amount === ""
-                }
-                onClick={handleBuyWithCoin}
-              >
-                {!insufficient ? "Buy" : "Insufficient Balance"}
-              </button>
+              {loadingTx ? (
+                <button className="buy-button" style={{ padding: "14px" }}>
+                  <div
+                    className="spinner-border text-white loading-confirm"
+                    role="status"
+                  >
+                    <span className="sr-only"></span>
+                  </div>
+                </button>
+              ) : (
+                <button
+                  className="buy-button"
+                  disabled={
+                    balance?.formatted === "0" ||
+                    !isConnected ||
+                    insufficient ||
+                    amount === ""
+                  }
+                  onClick={handleBuyWithCoin}
+                >
+                  {!insufficient ? "Buy" : "Insufficient Balance"}
+                </button>
+              )}
+
               <button
                 disabled
                 className="buy-button"

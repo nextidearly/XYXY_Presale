@@ -265,6 +265,7 @@ a {
   display: flex;
   column-gap: 30px;
   align-items: center;
+  padding: 6px;
 }
 
 .links-div.highlight {
@@ -363,7 +364,7 @@ a {
 
 .swap-container {
   margin-top: 1em;
-  z-index: 999 !important;
+  z-index: 80;
   padding: 1rem 1.2rem;
   border-radius: var(--border-radius);
   background: rgba(var(--card-rgb), 0);
@@ -440,7 +441,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
@@ -936,4 +937,23 @@ h3 {
 }
 .divider {
   margin: 0px;
+}
+
+.show > div {
+  background-color: #172134;
+  position: relative;
+  z-index: 100;
+  padding: 20px;
+  border: 1px solid #80808063;
+  border-radius: 20px;
+  margin-top: 15px;
+}
+
+.show > div > div > a {
+  width: 100% !important;
+}
+
+.show > div > div > a:hover {
+  text-decoration: none !important;
+  background-color: #2d3e5e !important;
 }
