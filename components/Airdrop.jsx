@@ -81,8 +81,9 @@ function Airdrop() {
       // reward = Web3.utils.fromWei(reward.toString());
       // setUserRole(role);
       // setUserReward(reward);
-      const result = addresses.filter((item) => item === address);
-      console.log(result)
+      const result = addresses.filter(
+        (item) => item.toString().toLowerCase() === address.toLowerCase()
+      );
       if (result.length) {
         setEligibiility(true);
         return toast.success("Congratulation! you can get airdrop.");
