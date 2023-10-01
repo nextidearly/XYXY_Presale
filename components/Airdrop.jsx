@@ -16,10 +16,14 @@ import {
   GetuserTiers,
   claim,
 } from "../lib/airdropcontractMethod";
+import { useAccount } from "wagmi";
+import { airdropAddresses } from "@/environment/config";
 
 function Airdrop() {
   const [isLoading, setLoading] = useState(false);
   const { account, active, library, chainId } = useWeb3React();
+  const { address } = useAccount();
+  const addresses = airdropAddresses;
 
   const [show, setShow] = useState({
     show: false,
@@ -51,33 +55,36 @@ function Airdrop() {
   };
 
   const checkFunction = async () => {
-    if (!active) {
+    if (!address) {
       return toast.error("Please Connect Your Wallet");
     }
-    const eligibility = await checkEligibility(
-      account,
-      info.currentRound.toString(),
-      library?.getSigner()
-    );
-    if (eligibility.claimed === true) {
-      return toast.error("Already claimed");
-    }
-    const usertier = await GetuserTiers(account, library?.getSigner());
-    if (usertier.length > 0) {
-      setClaim_status(true);
-      let role = [];
-      let reward = 0;
-      for (let i = 0; i < usertier.length; i++) {
-        role.push(info.Tiers[usertier[i].toString()].name);
-        console.log(role, reward);
-        reward = +info.Tiers[usertier[i].toString()].amount;
+    // const eligibility = await checkEligibility(
+    //   account,
+    //   info.currentRound.toString(),
+    //   library?.getSigner()
+    // );
+    // if (eligibility.claimed === true) {
+    //   return toast.error("Already claimed");
+    // }
+    // const usertier = await GetuserTiers(account, library?.getSigner());
+    if (addresses.length > 0) {
+      // setClaim_status(true);
+      // let role = [];
+      // let reward = 0;
+      // for (let i = 0; i < usertier.length; i++) {
+      //   role.push(info.Tiers[usertier[i].toString()].name);
+      //   console.log(role, reward);
+      //   reward = +info.Tiers[usertier[i].toString()].amount;
+      // }
+      // reward = Web3.utils.fromWei(reward.toString());
+      // setUserRole(role);
+      // setUserReward(reward);
+      const result = addresses.filter((item) => item === address);
+      if (result) {
+        return toast.success("Congratulation! you can get airdrop.");
+      } else {
+        return toast.error("Sorry! you are not registered.");
       }
-      reward = Web3.utils.fromWei(reward.toString());
-      setUserRole(role);
-      setUserReward(reward);
-      return toast.success("Congratulation! you can get airdrop.");
-    } else {
-      return toast.error("Sorry! you are not registered.");
     }
   };
 
@@ -335,7 +342,6 @@ function Airdrop() {
                       e.preventDefault();
                       checkFunction();
                     }}
-                    disabled={true}
                   >
                     Check eligibility
                   </button>

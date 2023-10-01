@@ -39,3 +39,8 @@ export const CURRENCYS = {
   7777777: 1590,
   56: 212,
 };
+
+export const airdropAddresses = [
+  0x4f0b947c347f8a8fbca7185e365bb837613835a6,
+  0x00ac3ee9d9b33aea35e748bfc7008796cdf914b6,
+];
