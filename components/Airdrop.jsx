@@ -1,118 +1,123 @@
-import React, { useEffect, useState } from 'react'
-import { useWeb3React } from '@web3-react/core'
-import ConnectModal from './Connect/ConnectModal'
-import { BigNumber, ethers } from 'ethers'
-import Web3 from 'web3'
-import { Modal, Container, Nav, Navbar } from 'react-bootstrap'
+import React, { useEffect, useState } from "react";
+import { useWeb3React } from "@web3-react/core";
+import ConnectModal from "./Connect/ConnectModal";
+import { BigNumber, ethers } from "ethers";
+import Web3 from "web3";
+import { Modal, Container, Nav, Navbar } from "react-bootstrap";
 
-import toast from 'react-hot-toast'
+import toast from "react-hot-toast";
 
-import Confetti from 'react-confetti'
-import useWindowSize from 'react-use/lib/useWindowSize'
+import Confetti from "react-confetti";
+import useWindowSize from "react-use/lib/useWindowSize";
 
-import { getAllInfo, checkEligibility, GetuserTiers, claim } from '../lib/airdropcontractMethod'
+import {
+  getAllInfo,
+  checkEligibility,
+  GetuserTiers,
+  claim,
+} from "../lib/airdropcontractMethod";
 
 function Airdrop() {
-  const [isLoading, setLoading] = useState(false)
-  const { account, active, library, chainId } = useWeb3React()
+  const [isLoading, setLoading] = useState(false);
+  const { account, active, library, chainId } = useWeb3React();
 
   const [show, setShow] = useState({
     show: false,
-    title: '',
-    link: '',
+    title: "",
+    link: "",
     progress: false,
     dismiss: false,
-    buttonText: '',
-  })
+    buttonText: "",
+  });
 
   const [info, setInfo] = useState({
     claimActive: false,
     currentRound: 0,
-    Tiers: '',
-    owner: '',
-  })
+    Tiers: "",
+    owner: "",
+  });
 
-  const [balance, setBalance] = useState(0)
-  const [claim_status, setClaim_status] = useState(false)
-  const [userRole, setUserRole] = useState('')
-  const [userReward, setUserReward] = useState(0)
+  const [balance, setBalance] = useState(0);
+  const [claim_status, setClaim_status] = useState(false);
+  const [userRole, setUserRole] = useState("");
+  const [userReward, setUserReward] = useState(0);
 
-  const { width, height } = useWindowSize()
-  const [congrats, setCongrats] = useState(false)
+  const { width, height } = useWindowSize();
+  const [congrats, setCongrats] = useState(false);
 
   const fetchBalance = async () => {
-    const amount = await library.getBalance(account)
-    setBalance(Web3.utils.fromWei(amount.toString()))
-  }
+    const amount = await library.getBalance(account);
+    setBalance(Web3.utils.fromWei(amount.toString()));
+  };
 
   const checkFunction = async () => {
     if (!active) {
-      return toast.error('Please Connect Your Wallet')
+      return toast.error("Please Connect Your Wallet");
     }
     const eligibility = await checkEligibility(
       account,
       info.currentRound.toString(),
       library?.getSigner()
-    )
+    );
     if (eligibility.claimed === true) {
-      return toast.error('Already claimed')
+      return toast.error("Already claimed");
     }
-    const usertier = await GetuserTiers(account, library?.getSigner())
+    const usertier = await GetuserTiers(account, library?.getSigner());
     if (usertier.length > 0) {
-      setClaim_status(true)
-      let role = []
-      let reward = 0
+      setClaim_status(true);
+      let role = [];
+      let reward = 0;
       for (let i = 0; i < usertier.length; i++) {
-        role.push(info.Tiers[usertier[i].toString()].name)
-        console.log(role, reward)
-        reward = +info.Tiers[usertier[i].toString()].amount
+        role.push(info.Tiers[usertier[i].toString()].name);
+        console.log(role, reward);
+        reward = +info.Tiers[usertier[i].toString()].amount;
       }
-      reward = Web3.utils.fromWei(reward.toString())
-      setUserRole(role)
-      setUserReward(reward)
-      return toast.success('Congratulation! you can get airdrop.')
+      reward = Web3.utils.fromWei(reward.toString());
+      setUserRole(role);
+      setUserReward(reward);
+      return toast.success("Congratulation! you can get airdrop.");
     } else {
-      return toast.error('Sorry! you are not registered.')
+      return toast.error("Sorry! you are not registered.");
     }
-  }
+  };
 
   useEffect(() => {
     if (account && library) {
-      fetchBalance()
+      fetchBalance();
     }
-  }, [account, library, balance])
+  }, [account, library, balance]);
 
   useEffect(() => {
     if (active) {
-      setLoading(true)
-      let loadingToast = toast.loading('Loading... please wait')
-      getEngine()
+      setLoading(true);
+      let loadingToast = toast.loading("Loading... please wait");
+      getEngine();
       setTimeout(() => {
-        toast.success('Contract loaded', {
+        toast.success("Contract loaded", {
           id: loadingToast,
-        })
-        setLoading(false)
-      }, 500)
+        });
+        setLoading(false);
+      }, 500);
     }
-  }, [active, account])
+  }, [active, account]);
 
   useEffect(() => {
     if (claim_status) {
-      setCongrats(true)
+      setCongrats(true);
       setTimeout(() => {
-        setCongrats(false)
-      }, 3000)
+        setCongrats(false);
+      }, 3000);
     } else {
-      setCongrats(false)
+      setCongrats(false);
     }
-  }, [claim_status])
+  }, [claim_status]);
 
-  const handleClose = () => setShow(false)
+  const handleClose = () => setShow(false);
 
   async function getEngine() {
-    const data = await getAllInfo(library?.getSigner())
-    console.log(data)
-    setInfo(data)
+    const data = await getAllInfo(library?.getSigner());
+    console.log(data);
+    setInfo(data);
   }
 
   function showMintModal(state, title, link, progress, dismiss, buttonText) {
@@ -123,80 +128,84 @@ function Airdrop() {
       progress,
       dismiss,
       buttonText,
-    })
+    });
   }
 
   async function claimFunction() {
     try {
       if (!active) {
-        return toast.error('Please Connect Your Wallet')
+        return toast.error("Please Connect Your Wallet");
       }
       if (!account) {
-        return
+        return;
       }
       if (!info.claimActive) {
-        return toast.error('Claim is not Active yet')
+        return toast.error("Claim is not Active yet");
       }
-      toast('Please wait..', {
-        icon: '👏',
-      })
-      console.log('info-->', info)
-      var tx = await claim(library?.getSigner())
+      toast("Please wait..", {
+        icon: "👏",
+      });
+      console.log("info-->", info);
+      var tx = await claim(library?.getSigner());
       showMintModal(
         true,
-        'Claim submitted',
+        "Claim submitted",
         `https://explorer.zksync.io/tx/${tx.hash}`,
         true,
         false,
-        ''
-      )
-      await tx.wait(1)
+        ""
+      );
+      await tx.wait(1);
       showMintModal(
         true,
-        'Claim Success',
+        "Claim Success",
         `https://explorer.zksync.io/tx/${tx.hash}`,
         false,
         true,
-        'Done'
-      )
-      setClaim_status(false)
+        "Done"
+      );
+      setClaim_status(false);
     } catch (error) {
-      console.log(typeof error)
-      console.log('Error', error.toString())
-      if (error.toString().includes('execution reverted')) {
-        toast.error('Please contact Admins')
+      console.log(typeof error);
+      console.log("Error", error.toString());
+      if (error.toString().includes("execution reverted")) {
+        toast.error("Please contact Admins");
       } else {
-        toast.error('Transaction Error')
+        toast.error("Transaction Error");
       }
-      showMintModal(false, '', '', false, true, 'Close')
+      showMintModal(false, "", "", false, true, "Close");
     }
   }
 
   return (
     <>
-      <div className='mintmodalcontainer'>
-        <Modal show={show.show} onHide={handleClose} className='mymodal'>
+      <div className="mintmodalcontainer">
+        <Modal show={show.show} onHide={handleClose} className="mymodal">
           <Modal.Body>
-            <div className='mintmodal'>
-              <img src='/success.png' className='mintmodalimage' alt='Mintmodalimage' />
+            <div className="mintmodal">
+              <img
+                src="/success.png"
+                className="mintmodalimage"
+                alt="Mintmodalimage"
+              />
 
               <h2>{show.title}</h2>
               <h3>
                 See the transaction on
-                <a href={show.link} target='_blank' rel='noreferrer'>
-                  {' '}
+                <a href={show.link} target="_blank" rel="noreferrer">
+                  {" "}
                   zkSync Explorer
                 </a>
               </h3>
               {show.progress && (
-                <div className='spinner-border text-primary' role='status'>
-                  <span className='sr-only'></span>
+                <div className="spinner-border text-primary" role="status">
+                  <span className="sr-only"></span>
                 </div>
               )}
               <h3>{show.body}</h3>
 
               {show.dismiss && (
-                <button className='btn herobtn' onClick={handleClose}>
+                <button className="btn herobtn" onClick={handleClose}>
                   {show.buttonText}
                 </button>
               )}
@@ -205,42 +214,23 @@ function Airdrop() {
         </Modal>
       </div>
 
-      <div className='hero-container'>
-        <div className='nav-bar'>
-          <Navbar expand='lg'>
-            <Container className='menu-container'>
-              <Navbar.Brand href='/'>
-                <img src='logo.png' className='logo' alt='XYXY' />
+      <div className="hero-container">
+        <div className="nav-bar">
+          <Navbar expand="lg">
+            <Container className="menu-container">
+              <Navbar.Brand href="/">
+                <img src="logo.png" className="logo" alt="XYXY" />
               </Navbar.Brand>
-              <Navbar.Toggle aria-controls='basic-navbar-nav' />
-              <Navbar.Collapse id='basic-navbar-nav'>
-                <Nav className='me-auto'>
-                  <div className='links-div highlight'>
-                    <Nav.Link href='/buy'>BUY $XYXY</Nav.Link>
-                  </div>
-                  <div className='links-div'>
-                    <Nav.Link href='/presale'>Presale</Nav.Link>
-                  </div>
-                  <div className='links-div'>
-                    <Nav.Link href='/stake'>Stake</Nav.Link>
-                  </div>
-                  <div className='links-div'>
-                    <Nav.Link href='/vote'>Vote</Nav.Link>
-                  </div>
-                  <div className='links-div'>
-                    <Nav.Link href='https://Mixer.XYXYfi.io'>Go to Mixer</Nav.Link>
-                  </div>
-                  <div className='header-connect'>
-                    <ConnectModal />
-                  </div>
+              <Navbar.Toggle aria-controls="basic-navbar-nav" />
+              <Navbar.Collapse id="basic-navbar-nav">
+                <Nav className="me-auto">
+                  <ConnectModal />
                 </Nav>
               </Navbar.Collapse>
             </Container>
           </Navbar>
         </div>
-        <div className='gradient1'></div>
-        <div className='noise'></div>
-        <div className='gradient'>
+        <div className="gradient">
           <div>
             <h1>AIRDROP</h1>
           </div>
@@ -260,19 +250,22 @@ function Airdrop() {
           />
         )}
         {isLoading && (
-          <div className='spinner-border' role='status'>
-            <span className='sr-only'></span>
+          <div className="spinner-border" role="status">
+            <span className="sr-only"></span>
           </div>
         )}
         {!isLoading && (
           <>
-            <div className='swap-container'>
-              <div className='airdrop-text'>
+            <div className="swap-container">
+              <div className="airdrop-text">
                 {claim_status ? (
-                  <div className='detailBox'>
-                    <div style={{ color: 'white', fontSize: '20px' }} className='info s-font'>
+                  <div className="detailBox">
+                    <div
+                      style={{ color: "white", fontSize: "20px" }}
+                      className="info s-font"
+                    >
                       <span>Your roles</span>
-                      <div style={{ display: 'block', textAlign: 'right' }}>
+                      <div style={{ display: "block", textAlign: "right" }}>
                         {userRole.map((row, idx) => (
                           <>
                             <span key={idx}>{row}</span>
@@ -281,17 +274,29 @@ function Airdrop() {
                         ))}
                       </div>
                     </div>
-                    <div style={{ color: 'white', fontSize: '20px' }} className='info s-font'>
+                    <div
+                      style={{ color: "white", fontSize: "20px" }}
+                      className="info s-font"
+                    >
                       <span>Your Airdrop Amount</span>
                       <span>{userReward}</span>
                     </div>
-                    <div style={{ color: 'white', fontSize: '20px' }} className='info s-font'>
+                    <div
+                      style={{ color: "white", fontSize: "20px" }}
+                      className="info s-font"
+                    >
                       <span>Claimable</span>
                       <span>{`${info.claimActive}`}</span>
                     </div>
                   </div>
                 ) : (
-                  <h4 style={{ color: 'white', letterSpacing: 2, lineHeight: 1.8 }}>
+                  <h4
+                    style={{
+                      color: "white",
+                      letterSpacing: 2,
+                      lineHeight: 1.8,
+                    }}
+                  >
                     <strong>
                       Users who own the Following Discord roles:
                       <br />
@@ -305,24 +310,26 @@ function Airdrop() {
                 )}
               </div>
 
-              <div className='button-section'>
+              <div className="button-section">
                 {claim_status ? (
                   <button
-                    className='claim-button'
+                    className="claim-button"
                     onClick={(e) => {
-                      e.preventDefault()
-                      claimFunction()
+                      e.preventDefault();
+                      claimFunction();
                     }}
+                    disabled={true}
                   >
                     Claim airdrop
                   </button>
                 ) : (
                   <button
-                    className='buy-button'
+                    className="buy-button"
                     onClick={(e) => {
-                      e.preventDefault()
-                      checkFunction()
+                      e.preventDefault();
+                      checkFunction();
                     }}
+                    disabled={true}
                   >
                     Check eligibility
                   </button>
@@ -332,17 +339,8 @@ function Airdrop() {
           </>
         )}
       </div>
-      <div
-        id='background-radial-gradient'
-        style={{
-          width: '200vw',
-          height: '200vh',
-          transform: 'translate(-50vw, -100vh)',
-          background: 'linear-gradient(rgb(32, 39, 56) 0%, rgb(7, 8, 22) 100%)',
-        }}
-      ></div>
     </>
-  )
+  );
 }
 
-export default Airdrop
+export default Airdrop;

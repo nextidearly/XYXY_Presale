@@ -5,7 +5,7 @@ import { TREASURY, LOGOS, TOKEN_PRICE, CURRENCYS } from "../environment/config";
 import { useAccount, useBalance, useNetwork } from "wagmi";
 import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 // const CountDownComponent = dynamic(() => import("../components/CountDown"), {
 //   ssr: false,
 // });
@@ -13,7 +13,7 @@ import dynamic from "next/dynamic";
 function Heros() {
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
-  const { data } = useBalance({ address: address });
+  const data = useBalance({ address: address, chainId: chain?.id, });
   const { enqueueSnackbar } = useSnackbar();
   const [type, setType] = useState("ETH");
   const [totalRaisedETH, setTotalRaisedETH] = useState(0);
@@ -141,6 +141,8 @@ function Heros() {
       clearInterval(interval);
     };
   }, []);
+
+  console.log(data)
 
   return (
     <>
