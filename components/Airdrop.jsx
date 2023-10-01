@@ -18,12 +18,14 @@ import {
 } from "../lib/airdropcontractMethod";
 import { useAccount } from "wagmi";
 import { airdropAddresses } from "@/environment/config";
+import { setLogLevel } from "firebase/app";
 
 function Airdrop() {
   const [isLoading, setLoading] = useState(false);
   const { account, active, library, chainId } = useWeb3React();
   const { address } = useAccount();
   const addresses = airdropAddresses;
+  const [eligibility, setEligibiility] = useState(false);
 
   const [show, setShow] = useState({
     show: false,
@@ -81,8 +83,10 @@ function Airdrop() {
       // setUserReward(reward);
       const result = addresses.filter((item) => item === address);
       if (result) {
+        setEligibiility(true);
         return toast.success("Congratulation! you can get airdrop.");
       } else {
+        setEligibiility(false);
         return toast.error("Sorry! you are not registered.");
       }
     }
@@ -140,47 +144,48 @@ function Airdrop() {
 
   async function claimFunction() {
     try {
-      if (!active) {
+      if (!address) {
         return toast.error("Please Connect Your Wallet");
       }
-      if (!account) {
-        return;
-      }
-      if (!info.claimActive) {
-        return toast.error("Claim is not Active yet");
-      }
-      toast("Please wait..", {
-        icon: "👏",
-      });
-      console.log("info-->", info);
-      var tx = await claim(library?.getSigner());
-      showMintModal(
-        true,
-        "Claim submitted",
-        `https://explorer.zksync.io/tx/${tx.hash}`,
-        true,
-        false,
-        ""
-      );
-      await tx.wait(1);
-      showMintModal(
-        true,
-        "Claim Success",
-        `https://explorer.zksync.io/tx/${tx.hash}`,
-        false,
-        true,
-        "Done"
-      );
-      setClaim_status(false);
+      return toast.error("Claim is not Active yet");
+      // if (!account) {
+      //   return;
+      // }
+      // if (!info.claimActive) {
+
+      // }
+      // toast("Please wait..", {
+      //   icon: "👏",
+      // });
+      // console.log("info-->", info);
+      // var tx = await claim(library?.getSigner());
+      // showMintModal(
+      //   true,
+      //   "Claim submitted",
+      //   `https://explorer.zksync.io/tx/${tx.hash}`,
+      //   true,
+      //   false,
+      //   ""
+      // );
+      // await tx.wait(1);
+      // showMintModal(
+      //   true,
+      //   "Claim Success",
+      //   `https://explorer.zksync.io/tx/${tx.hash}`,
+      //   false,
+      //   true,
+      //   "Done"
+      // );
+      // setClaim_status(false);
     } catch (error) {
-      console.log(typeof error);
-      console.log("Error", error.toString());
-      if (error.toString().includes("execution reverted")) {
-        toast.error("Please contact Admins");
-      } else {
-        toast.error("Transaction Error");
-      }
-      showMintModal(false, "", "", false, true, "Close");
+      // console.log(typeof error);
+      // console.log("Error", error.toString());
+      // if (error.toString().includes("execution reverted")) {
+      //   toast.error("Please contact Admins");
+      // } else {
+      //   toast.error("Transaction Error");
+      // }
+      // showMintModal(false, "", "", false, true, "Close");
     }
   }
 
@@ -310,28 +315,64 @@ function Airdrop() {
                       lineHeight: 1.8,
                     }}
                   >
-                    <strong>
-                      Users who own the Following Discord roles:
-                      <br />
-                      @OG ,@IDO PARTICIPANT ,@ANON ,@ZEALY ,@FAM
-                      <br />
-                      Are eligible for an Airdrop
-                      <br />
-                      Get your roles on the Discord now
-                    </strong>
+                    {!eligibility ? (
+                      <>
+                        <strong>
+                          Users who own the Following Discord roles:
+                          <br />
+                          @OG ,@IDO PARTICIPANT ,@ANON ,@ZEALY ,@FAM
+                          <br />
+                          Are eligible for an Airdrop
+                          <br />
+                          Get your roles on the Discord now
+                        </strong>
+                      </>
+                    ) : (
+                      <>
+                        <div className="detailBox">
+                          <div
+                            style={{ color: "white", fontSize: "20px" }}
+                            className="info s-font"
+                          >
+                            <span>Your roles</span>
+                            <div
+                              style={{ display: "block", textAlign: "right" }}
+                            >
+                              <span>OG</span>
+                              <br />
+                              <span>Anon</span>
+                              <br />
+                            </div>
+                          </div>
+                          <div
+                            style={{ color: "white", fontSize: "20px" }}
+                            className="info s-font"
+                          >
+                            <span>Your Airdrop Amount</span>
+                            <span>300</span>
+                          </div>
+                          <div
+                            style={{ color: "white", fontSize: "20px" }}
+                            className="info s-font"
+                          >
+                            <span>Claimable</span>
+                            <span>false</span>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </h4>
                 )}
               </div>
 
               <div className="button-section">
-                {claim_status ? (
+                {eligibility ? (
                   <button
                     className="claim-button"
                     onClick={(e) => {
                       e.preventDefault();
                       claimFunction();
                     }}
-                    disabled={true}
                   >
                     Claim airdrop
                   </button>
