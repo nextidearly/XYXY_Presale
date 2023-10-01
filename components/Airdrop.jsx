@@ -82,7 +82,8 @@ function Airdrop() {
       // setUserRole(role);
       // setUserReward(reward);
       const result = addresses.filter((item) => item === address);
-      if (result) {
+      console.log(result)
+      if (result.length) {
         setEligibiility(true);
         return toast.success("Congratulation! you can get airdrop.");
       } else {
