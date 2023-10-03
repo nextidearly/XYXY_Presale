@@ -317,7 +317,7 @@ function Heros() {
                   min={0}
                 />
                 <span>
-                  <img src="/assets/XYXY.png" className="eth" alt="logo" />
+                  <img src="/assets/XYXY.jpg" className="eth" alt="logo" />
                 </span>
               </div>
             </div>
