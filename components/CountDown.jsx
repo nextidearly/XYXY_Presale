@@ -1,18 +1,20 @@
 import React from "react";
 import Countdown from "react-countdown";
 
-export default function CountDownComponent({ targetBlockTime, complete }) {
+export default function CountDownComponent({
+  targetBlockTime,
+  start,
+  started,
+}) {
   const renderer = ({ completed, formatted }) => {
     const { days, hours, minutes, seconds } = formatted;
-    if (completed) {
-      // Render a completed state
-      complete(true);
+    if (completed && start) {
+      started(true);
       return true;
     }
-    // Render a countdown
     return (
       <>
-        <div className="time-container">
+        <div>
           <span>{days}</span>:<span>{hours}</span>:<span>{minutes}</span>:
           <span>{seconds}</span>
         </div>
@@ -24,7 +26,11 @@ export default function CountDownComponent({ targetBlockTime, complete }) {
       {targetBlockTime ? (
         <Countdown date={targetBlockTime} renderer={renderer} />
       ) : (
-        <div className="w-10 h-[60px]" />
+        <>
+          <div>
+            <span>...</span>
+          </div>
+        </>
       )}
     </div>
   );

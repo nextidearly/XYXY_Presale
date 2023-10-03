@@ -18,17 +18,13 @@ export const LOGOS = {
   56: "/assets/bnb.png",
 };
 
-export const START_PRESALE = Number(
-  (
-    new Date(new Date("9/29/2023 10:00:00 AM EST").toString()).getTime() / 1000
-  ).toFixed(0)
-);
+export const START_PRESALE = new Date(
+  new Date("10/5/2023 2:00:00 AM UTC").toString()
+).getTime();
 
-export const END_PRESALE = Number(
-  (
-    new Date(new Date("11/29/2023 10:00:00 AM EST").toString()).getTime() / 1000
-  ).toFixed(0)
-);
+export const END_PRESALE = new Date(
+  new Date("10/15/2023 2:00:01 PM UTC").toString()
+).getTime();
 
 export const CURRENCYS = {
   1: 1590,

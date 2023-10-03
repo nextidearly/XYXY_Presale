@@ -4,11 +4,10 @@ import { useEagerConnect, useInactiveListener } from "../lib/hooks/web3Hook";
 import { Toaster } from "react-hot-toast";
 import Heros from "../components/Heros";
 
-
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-    // console.log("Main props", props);
+  // console.log("Main props", props);
 
   // handle logic to eagerly connect to the injected ethereum provider, if it exists and has granted access already
   const triedEager = useEagerConnect();

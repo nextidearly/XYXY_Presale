@@ -1,12 +1,23 @@
 import React, { useEffect, useState } from "react";
 import ConnectModal from "./Connect/ConnectModal";
 import { Container, Nav, Navbar } from "react-bootstrap";
-import { TREASURY, LOGOS, TOKEN_PRICE, CURRENCYS } from "../environment/config";
+import {
+  TREASURY,
+  LOGOS,
+  TOKEN_PRICE,
+  CURRENCYS,
+  START_PRESALE,
+  END_PRESALE,
+} from "../environment/config";
 import { useAccount, useNetwork } from "wagmi";
 import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
 import { ref, push, query, onValue, update, get } from "firebase/database";
 import { db } from "@/lib/firebase";
+import dynamic from "next/dynamic";
+const CountDownComponent = dynamic(() => import("./CountDown"), {
+  ssr: false,
+});
 
 function Heros() {
   const { address, isConnected } = useAccount();
@@ -29,6 +40,7 @@ function Heros() {
     symbol: "ETH",
     value: 0,
   });
+  const [started, setStarted] = useState(false);
 
   const handleChangeAmount = (amount) => {
     setEth(amount);
@@ -162,6 +174,10 @@ function Heros() {
     }
   };
 
+  const handleStarted = (data) => {
+    setStarted(data);
+  };
+
   useEffect(() => {
     handleChangeAmount(amount);
   }, [amount]);
@@ -220,12 +236,6 @@ function Heros() {
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="me-auto">
-                  <div className="links-div">
-                    <Nav.Link href="/">presale</Nav.Link>
-                  </div>
-                  <div className="links-div">
-                    <Nav.Link href="/airdrop">Airdrop</Nav.Link>
-                  </div>
                   <ConnectModal />
                 </Nav>
               </Navbar.Collapse>
@@ -342,22 +352,27 @@ function Heros() {
                 style={{ color: "white", fontSize: "10px" }}
                 className="info s-font"
               >
-                <span className="b-info">ETH Total raised</span>
-                <span>{totalRaisedETH} ETH</span>
+                <span className="b-info">Starts in</span>
+                <span>
+                  {START_PRESALE && (
+                    <CountDownComponent
+                      targetBlockTime={START_PRESALE}
+                      start
+                      started={handleStarted}
+                    />
+                  )}
+                </span>
               </div>
               <div
                 style={{ color: "white", fontSize: "10px" }}
                 className="info s-font"
               >
-                <span className="b-info">BNB Total raised</span>
-                <span>{totalRaisedBNB} BNB</span>
-              </div>
-              <div
-                style={{ color: "white", fontSize: "10px" }}
-                className="info s-font"
-              >
-                <span className="b-info">MATIC Total raised</span>
-                <span>{totalRaisedMATIC} MATIC</span>
+                <span className="b-info">Ends in</span>
+                <span>
+                  {END_PRESALE && (
+                    <CountDownComponent targetBlockTime={END_PRESALE} />
+                  )}
+                </span>
               </div>
               <hr className="divider" />
               <div
@@ -373,7 +388,6 @@ function Heros() {
                 </span>
               </div>
             </div>
-            {/* <CountDownComponent  targetBlockTime={"2023-11-29T07:00:00-08:00"}/> */}
             <div className="button-section">
               {loadingTx ? (
                 <button className="buy-button" style={{ padding: "14px" }}>
@@ -391,7 +405,8 @@ function Heros() {
                     balance?.formatted === "0" ||
                     !isConnected ||
                     insufficient ||
-                    amount === ""
+                    amount === "" ||
+                    !started
                   }
                   onClick={handleBuyWithCoin}
                 >
