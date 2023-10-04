@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import { useEagerConnect, useInactiveListener } from "../lib/hooks/web3Hook";
 import { Toaster } from "react-hot-toast";
 import Heros from "../components/Heros";
-
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
@@ -14,6 +13,7 @@ export default function Home() {
 
   // handle logic to connect in reaction to certain events on the injected ethereum provider, if it exists
   useInactiveListener(!triedEager);
+
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />

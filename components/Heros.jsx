@@ -382,9 +382,9 @@ function Heros() {
                 <span className="b-info">Total raised</span>
                 <span>
                   ~${" "}
-                  {totalRaisedETH * 1590 +
+                  {Number(totalRaisedETH * 1590 +
                     totalRaisedBNB * 2121 +
-                    totalRaisedMATIC * 0.5}
+                    totalRaisedMATIC * 0.5).toFixed(2)}
                 </span>
               </div>
             </div>
