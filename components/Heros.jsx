@@ -18,6 +18,7 @@ import dynamic from "next/dynamic";
 const CountDownComponent = dynamic(() => import("./CountDown"), {
   ssr: false,
 });
+import toast from "react-hot-toast";
 
 function Heros() {
   const { address, isConnected } = useAccount();
@@ -57,8 +58,25 @@ function Heros() {
     setXyxy(amount2);
   };
 
+  const checkSoftCap = () => {
+    return Number(amount) * CURRENCYS[chain.id] < 20;
+  };
+
   const handleBuyWithCoin = async () => {
     setLoadingTx(true);
+
+    if (!started) {
+      toast.error("Presale is not started yet!");
+      setLoadingTx(false);
+      return;
+    }
+
+    if (checkSoftCap()) {
+      toast.error("Sorry, commitment amount should be greater than $20");
+      setLoadingTx(false);
+      return;
+    }
+
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const walletSigner = provider.getSigner(address);
     try {
@@ -346,7 +364,7 @@ function Heros() {
                 className="info s-font"
               >
                 <span className="b-info">Softcap</span>
-                <span>50 ETH</span>
+                <span>~$ 20</span>
               </div>
               <div
                 style={{ color: "white", fontSize: "10px" }}
@@ -382,9 +400,11 @@ function Heros() {
                 <span className="b-info">Total raised</span>
                 <span>
                   ~${" "}
-                  {Number(totalRaisedETH * 1590 +
-                    totalRaisedBNB * 2121 +
-                    totalRaisedMATIC * 0.5).toFixed(2)}
+                  {Number(
+                    totalRaisedETH * 1590 +
+                      totalRaisedBNB * 2121 +
+                      totalRaisedMATIC * 0.5
+                  ).toFixed(2)}
                 </span>
               </div>
             </div>
@@ -405,8 +425,7 @@ function Heros() {
                     balance?.formatted === "0" ||
                     !isConnected ||
                     insufficient ||
-                    amount === "" ||
-                    !started
+                    amount === ""
                   }
                   onClick={handleBuyWithCoin}
                 >
