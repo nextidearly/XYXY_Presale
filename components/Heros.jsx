@@ -366,32 +366,36 @@ function Heros() {
                 <span className="b-info">Softcap</span>
                 <span>~$ 20</span>
               </div>
-              <div
-                style={{ color: "white", fontSize: "10px" }}
-                className="info s-font"
-              >
-                <span className="b-info">Starts in</span>
-                <span>
-                  {START_PRESALE && (
-                    <CountDownComponent
-                      targetBlockTime={START_PRESALE}
-                      start
-                      started={handleStarted}
-                    />
-                  )}
-                </span>
-              </div>
-              <div
-                style={{ color: "white", fontSize: "10px" }}
-                className="info s-font"
-              >
-                <span className="b-info">Ends in</span>
-                <span>
-                  {END_PRESALE && (
-                    <CountDownComponent targetBlockTime={END_PRESALE} />
-                  )}
-                </span>
-              </div>
+              {started ? (
+                <div
+                  style={{ color: "white", fontSize: "10px" }}
+                  className="info s-font"
+                >
+                  <span className="b-info">Ends in</span>
+                  <span>
+                    {END_PRESALE && (
+                      <CountDownComponent targetBlockTime={END_PRESALE} />
+                    )}
+                  </span>
+                </div>
+              ) : (
+                <div
+                  style={{ color: "white", fontSize: "10px" }}
+                  className="info s-font"
+                >
+                  <span className="b-info">Starts in</span>
+                  <span>
+                    {START_PRESALE && (
+                      <CountDownComponent
+                        targetBlockTime={START_PRESALE}
+                        start
+                        started={handleStarted}
+                      />
+                    )}
+                  </span>
+                </div>
+              )}
+
               <hr className="divider" />
               <div
                 style={{ color: "white", fontSize: "10px" }}
