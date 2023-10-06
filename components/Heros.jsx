@@ -197,7 +197,7 @@ function Heros() {
   };
 
   const handleMaxAmount = () => {
-    setAmount(Number(balance.formatted));
+    setAmount(Number(Number(balance.formatted).toFixed(5)));
   };
 
   useEffect(() => {
