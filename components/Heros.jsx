@@ -254,9 +254,9 @@ function Heros() {
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="me-auto">
-                <div className="links-div">
-                  <Nav.Link href="https://app.xyxy.io/">Home</Nav.Link>
-                </div>
+                  <div className="links-div">
+                    <Nav.Link href="https://app.xyxy.io/">Home</Nav.Link>
+                  </div>
                   <ConnectModal />
                 </Nav>
               </Navbar.Collapse>
@@ -349,25 +349,22 @@ function Heros() {
                 className="info s-font"
               >
                 <span className="b-info">Exchange Rate</span>
-                <span>
-                  1 {balance?.symbol} to{" "}
-                  {CURRENCYS[currentChain?.id] / TOKEN_PRICE} XYXY TOKEN
-                </span>
+                <span>1 USD / 9 XYXY TOKEN</span>
               </div>
 
               <div
                 style={{ color: "white", fontSize: "10px" }}
                 className="info s-font"
               >
-                <span className="b-info">Max Supply</span>
-                <span>100,000,000 XYXY TOKEN</span>
+                <span className="b-info">Min Buy</span>
+                <span>~$ 20</span>
               </div>
               <div
                 style={{ color: "white", fontSize: "10px" }}
                 className="info s-font"
               >
                 <span className="b-info">Softcap</span>
-                <span>~$ 20</span>
+                <span>10,000 USDC</span>
               </div>
               {started ? (
                 <div
