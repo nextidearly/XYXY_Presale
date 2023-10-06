@@ -254,6 +254,9 @@ function Heros() {
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="me-auto">
+                <div className="links-div">
+                  <Nav.Link href="https://app.xyxy.io/">Home</Nav.Link>
+                </div>
                   <ConnectModal />
                 </Nav>
               </Navbar.Collapse>
