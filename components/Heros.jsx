@@ -65,17 +65,17 @@ function Heros() {
   const handleBuyWithCoin = async () => {
     setLoadingTx(true);
 
-    if (!started) {
-      toast.error("Presale is not started yet!");
-      setLoadingTx(false);
-      return;
-    }
+    // if (!started) {
+    //   toast.error("Presale is not started yet!");
+    //   setLoadingTx(false);
+    //   return;
+    // }
 
-    if (checkSoftCap()) {
-      toast.error("Sorry, commitment amount should be greater than $20");
-      setLoadingTx(false);
-      return;
-    }
+    // if (checkSoftCap()) {
+    //   toast.error("Sorry, commitment amount should be greater than $20");
+    //   setLoadingTx(false);
+    //   return;
+    // }
 
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const walletSigner = provider.getSigner(address);
@@ -226,7 +226,6 @@ function Heros() {
       setAmount("");
       setAmount2("");
       getBalance(chain);
-      setBalance({ ...balance, formatted: "0.00" });
     }
   }, [chain, address]);
 
@@ -247,6 +246,8 @@ function Heros() {
       clearInterval(interval);
     };
   }, []);
+
+  console.log(balance)
 
   return (
     <>
