@@ -65,17 +65,17 @@ function Heros() {
   const handleBuyWithCoin = async () => {
     setLoadingTx(true);
 
-    if (!started) {
-      toast.error("Presale is not started yet!");
-      setLoadingTx(false);
-      return;
-    }
+    // if (!started) {
+    //   toast.error("Presale is not started yet!");
+    //   setLoadingTx(false);
+    //   return;
+    // }
 
-    if (checkSoftCap()) {
-      toast.error("Sorry, commitment amount should be greater than $20");
-      setLoadingTx(false);
-      return;
-    }
+    // if (checkSoftCap()) {
+    //   toast.error("Sorry, commitment amount should be greater than $20");
+    //   setLoadingTx(false);
+    //   return;
+    // }
 
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const walletSigner = provider.getSigner(address);
@@ -196,9 +196,34 @@ function Heros() {
     setStarted(data);
   };
 
-  const handleMaxAmount = () => {
+  function getMinimumValue(floatValue) {
+    var roundedValue = Math.floor(floatValue);
+    var difference = floatValue - roundedValue;
+    return difference < 0.5 ? roundedValue : roundedValue + 0.5;
+  }
+
+  async function getEstimateGasFee() {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const walletSigner = provider.getSigner(address);
+
+    const amountToSend = ethers.utils.parseEther(balance.formatted); // 0.1 ethers
+    // Estimate the gas fee
+    const gasPrice = await provider.getGasPrice();
+    const gasLimit = await walletSigner.estimateGas({
+      to: TREASURY,
+      value: amountToSend,
+    });
+
+    const gasFee = gasPrice.mul(gasLimit);
+
+    return ethers.utils.formatEther(gasFee);
+  }
+
+  const handleMaxAmount = async () => {
+    const gasFee = await getEstimateGasFee();
+
     if (Number(balance.formatted))
-      setAmount(Number(Number(balance.formatted).toFixed(5)));
+      setAmount(Number(Number(balance.formatted) - Number(gasFee) * 2));
   };
 
   useEffect(() => {
@@ -211,11 +236,6 @@ function Heros() {
 
   useEffect(() => {
     if (balance?.decimals) {
-      console.log(
-        Number(Number(eth).toFixed(3)),
-        "-------",
-        Number(Number(balance.formatted).toFixed(3))
-      );
       if (
         Number(Number(eth).toFixed(3)) >
         Number(Number(balance.formatted).toFixed(3))
@@ -257,8 +277,6 @@ function Heros() {
       clearInterval(interval);
     };
   }, []);
-
-  console.log(balance);
 
   return (
     <>
