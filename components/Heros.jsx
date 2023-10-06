@@ -198,7 +198,7 @@ function Heros() {
 
   const handleMaxAmount = () => {
     setAmount(Number(balance.formatted));
-  }
+  };
 
   useEffect(() => {
     handleChangeAmount(amount);
@@ -284,7 +284,7 @@ function Heros() {
             <div className="input-first" onClick={handleMaxAmount}>
               <div className="input-label">
                 <div className="info s-font">Enter amount</div>
-                <div className="info s-font">
+                <div className="info-2 s-font">
                   Balance :{" "}
                   {Math.round(Number(balance.formatted) * 100000) / 100000}{" "}
                   &nbsp;
@@ -368,35 +368,32 @@ function Heros() {
                 <span className="b-info">Softcap</span>
                 <span>10,000 USDC</span>
               </div>
-              {started ? (
-                <div
-                  style={{ color: "white", fontSize: "10px" }}
-                  className="info s-font"
-                >
-                  <span className="b-info">Ends in</span>
-                  <span>
-                    {END_PRESALE && (
-                      <CountDownComponent targetBlockTime={END_PRESALE} />
-                    )}
-                  </span>
-                </div>
-              ) : (
-                <div
-                  style={{ color: "white", fontSize: "10px" }}
-                  className="info s-font"
-                >
-                  <span className="b-info">Starts in</span>
-                  <span>
-                    {START_PRESALE && (
-                      <CountDownComponent
-                        targetBlockTime={START_PRESALE}
-                        start
-                        started={handleStarted}
-                      />
-                    )}
-                  </span>
-                </div>
-              )}
+              <div
+                style={{ color: "white", fontSize: "10px" }}
+                className={started ? "info s-font" : "info s-font hide-timer"}
+              >
+                <span className="b-info">Ends in</span>
+                <span>
+                  {END_PRESALE && (
+                    <CountDownComponent targetBlockTime={END_PRESALE} />
+                  )}
+                </span>
+              </div>
+              <div
+                style={{ color: "white", fontSize: "10px" }}
+                className={started ? "info s-font hide-timer" : "info s-font"}
+              >
+                <span className="b-info">Starts in</span>
+                <span>
+                  {START_PRESALE && (
+                    <CountDownComponent
+                      targetBlockTime={START_PRESALE}
+                      start
+                      started={handleStarted}
+                    />
+                  )}
+                </span>
+              </div>
 
               <hr className="divider" />
               <div

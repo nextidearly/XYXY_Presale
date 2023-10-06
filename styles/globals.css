@@ -281,8 +281,8 @@ a {
   font-size: 10px!important;
 }
 
-.s-font:hover {
-  color: #084298!important;
+.hide-timer {
+  display: none!important;
 }
 
 @keyframes flicker {
@@ -419,6 +419,22 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+
+.info-2 {
+  font-size: 14px;
+  font-weight: 600;
+  /* margin-bottom: 15px; */
+  font-family: "BaseNeueThin";
+  letter-spacing: 2px;
+  display: inline-flex;
+  color: white;
+  cursor: pointer;
+}
+
+.info-2:hover {
+  color: #82ff64;
 }
 
 .info {
