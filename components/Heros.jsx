@@ -349,7 +349,7 @@ function Heros() {
                 className="info s-font"
               >
                 <span className="b-info">Exchange Rate</span>
-                <span>1 USD / 9 XYXY TOKEN</span>
+                <span>~$ 0.07</span>
               </div>
 
               <div
