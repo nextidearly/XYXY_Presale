@@ -6,7 +6,7 @@ export const TwitterLink = process.env.TWITTER || "";
 export const TREASURY =
   process.env.NEXT_PUBLIC_TREASURY ||
   "0xc1E19a2Ae53B7007608F88621bb7a611A42c3301";
-export const TOKEN_PRICE = process.env.NEXT_PUBLIC_PRICE ||0.07;
+export const TOKEN_PRICE = process.env.NEXT_PUBLIC_PRICE || 0.07;
 
 export const LOGOS = {
   1: "/assets/eth.png",

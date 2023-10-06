@@ -196,6 +196,10 @@ function Heros() {
     setStarted(data);
   };
 
+  const handleMaxAmount = () => {
+    setAmount(Number(balance.formatted));
+  }
+
   useEffect(() => {
     handleChangeAmount(amount);
   }, [amount]);
@@ -277,15 +281,13 @@ function Heros() {
           }}
         >
           <div className="swap-container">
-            <div className="input-first">
+            <div className="input-first" onClick={handleMaxAmount}>
               <div className="input-label">
                 <div className="info s-font">Enter amount</div>
-                <div
-                  style={{ color: "white", fontSize: "10px" }}
-                  className="info s-font"
-                >
+                <div className="info s-font">
                   Balance :{" "}
-                  {Math.round(Number(balance.formatted) * 100000) / 100000}
+                  {Math.round(Number(balance.formatted) * 100000) / 100000}{" "}
+                  &nbsp;
                   {balance.symbol}
                 </div>
               </div>

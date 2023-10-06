@@ -273,6 +273,18 @@ a {
   animation: flicker 1s infinite alternate;
 }
 
+.max-enter {
+  cursor: pointer;
+}
+
+.s-font {
+  font-size: 10px!important;
+}
+
+.s-font:hover {
+  color: #084298!important;
+}
+
 @keyframes flicker {
   0%,
   18%,
@@ -426,6 +438,7 @@ a {
   /* margin-bottom: 15px; */
   font-family: "BaseNeueThin";
   letter-spacing: 3px;
+  cursor: pointer;
 }
 
 .logo {
