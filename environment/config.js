@@ -19,7 +19,7 @@ export const LOGOS = {
 };
 
 export const START_PRESALE = new Date(
-  new Date("10/6/2023 04:47:00 AM UTC").toString()
+  new Date("10/6/2023 05:47:00 AM UTC").toString()
 ).getTime();
 
 export const END_PRESALE = new Date(
