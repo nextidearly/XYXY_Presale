@@ -281,8 +281,8 @@ function Heros() {
           }}
         >
           <div className="swap-container">
-            <div className="input-first" onClick={handleMaxAmount}>
-              <div className="input-label">
+            <div className="input-first">
+              <div className="input-label" onClick={handleMaxAmount}>
                 <div className="info s-font">Enter amount</div>
                 <div className="info-2 s-font">
                   Balance :{" "}
