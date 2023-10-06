@@ -197,13 +197,6 @@ function Heros() {
   };
 
   const handleMaxAmount = () => {
-    const gas =
-      balance.symbol === "ETH"
-        ? 0.000009
-        : balance.symbol === "BNB"
-        ? 0.00009
-        : 0.009;
-
     if (Number(balance.formatted))
       setAmount(Number(Number(balance.formatted).toFixed(5)) - gas);
   };
@@ -218,10 +211,21 @@ function Heros() {
 
   useEffect(() => {
     if (balance?.decimals) {
-      if (Number(eth) > Number(balance.formatted)) {
+      console.log(
+        Number(Number(eth).toFixed(3)),
+        "-------",
+        Number(Number(balance.formatted).toFixed(3))
+      );
+      if (
+        Number(Number(eth).toFixed(3)) >
+        Number(Number(balance.formatted).toFixed(3))
+      ) {
         setInsufficient(true);
       }
-      if (Number(eth) < Number(balance.formatted)) {
+      if (
+        Number(Number(eth).toFixed(3)) <
+        Number(Number(balance.formatted).toFixed(3))
+      ) {
         setInsufficient(false);
       }
     }
