@@ -31,20 +31,28 @@ export const ConnectButtonCustom = () => {
             {(() => {
               if (!connected) {
                 return (
-                  <button onClick={openConnectModal} className="btn-head connectwallet header-connect" type="button">
+                  <button
+                    onClick={openConnectModal}
+                    className="btn-head connectwallet header-connect"
+                    type="button"
+                  >
                     Connect Wallet
                   </button>
                 );
               }
               if (chain.unsupported) {
                 return (
-                  <button onClick={openChainModal} className="btn-head connectwallet header-connect"  type="button">
+                  <button
+                    onClick={openChainModal}
+                    className="btn-head connectwallet header-connect"
+                    type="button"
+                  >
                     Wrong network
                   </button>
                 );
               }
               return (
-                <div style={{ display: "flex", gap: 12, flexWrap: 'wrap' }}>
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
                   <button
                     onClick={openChainModal}
                     style={{ display: "flex", alignItems: "center" }}
@@ -61,7 +69,6 @@ export const ConnectButtonCustom = () => {
                           overflow: "hidden",
                           marginRight: 4,
                         }}
-
                       >
                         {chain.iconUrl && (
                           <img
@@ -74,11 +81,12 @@ export const ConnectButtonCustom = () => {
                     )}
                     {chain.name}
                   </button>
-                  <button onClick={openAccountModal} type="button"  className="header-connect">
+                  <button
+                    onClick={openAccountModal}
+                    type="button"
+                    className="header-connect"
+                  >
                     {account.displayName}
-                    {account.displayBalance
-                      ? ` (${account.displayBalance})`
-                      : ""}
                   </button>
                 </div>
               );
