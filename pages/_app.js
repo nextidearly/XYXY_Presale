@@ -30,7 +30,7 @@ function getLibrary(provider) {
 }
 
 const { chains, publicClient } = configureChains(
-  [mainnet, bsc, polygon, optimism, arbitrum, base, zora, zkSync],
+  [mainnet, bsc, polygon, optimism, arbitrum, base, zora, {...zkSync, iconUrl: '/assets/zksync.png'}],
   [publicProvider()]
 );
 
