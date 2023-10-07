@@ -18,6 +18,7 @@ import {
   base,
   bsc,
   zora,
+  zkSync,
 } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { SnackbarProvider } from "notistack";
@@ -29,7 +30,7 @@ function getLibrary(provider) {
 }
 
 const { chains, publicClient } = configureChains(
-  [mainnet, bsc, polygon, optimism, arbitrum, base, zora],
+  [mainnet, bsc, polygon, optimism, arbitrum, base, zora, zkSync],
   [publicProvider()]
 );
 
