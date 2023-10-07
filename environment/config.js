@@ -19,11 +19,11 @@ export const LOGOS = {
 };
 
 export const START_PRESALE = new Date(
-  new Date("10/8/2023 02:00:00 PM UTC").toString()
+  new Date("10/7/2023 02:00:00 PM UTC").toString()
 ).getTime();
 
 export const END_PRESALE = new Date(
-  new Date("10/16/2023 2:00:01 PM UTC").toString()
+  new Date("10/15/2023 2:00:01 PM UTC").toString()
 ).getTime();
 
 export const CURRENCYS = {
