@@ -9,7 +9,7 @@ import {
   START_PRESALE,
   END_PRESALE,
 } from "../environment/config";
-import { useAccount, useNetwork } from "wagmi";
+import { useAccount, useBalance, useNetwork } from "wagmi";
 import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
 import { ref, push, query, onValue, update, get } from "firebase/database";
@@ -24,6 +24,7 @@ function Heros() {
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
   const { enqueueSnackbar } = useSnackbar();
+  const { data  } = useBalance({address: address})
 
   const [totalRaisedETH, setTotalRaisedETH] = useState(0);
   const [totalRaisedBNB, setTotalRaisedBNB] = useState(0);
@@ -176,12 +177,16 @@ function Heros() {
   };
 
   const getBalance = async () => {
+    console.log('---running=-----')
     if (typeof window.ethereum !== "undefined" && address) {
+    console.log('---running1111-----')
+      
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const value = await provider.getBalance(address);
       const data = ethers.utils.formatUnits(value, 18);
       const currency =
         chain.id === 56 ? "BNB" : chain.id === 137 ? "MATIC" : "ETH";
+        console.log('---running1111-----', data)
 
       setBalance({
         decimals: 18,
@@ -277,6 +282,8 @@ function Heros() {
       clearInterval(interval);
     };
   }, []);
+
+  console.log(data)
 
   return (
     <>
