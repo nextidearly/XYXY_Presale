@@ -29,7 +29,7 @@ function getLibrary(provider) {
   return library;
 }
 
-const { chains, publicClient } = configureChains(
+const { chains, publicClient, webSocketPublicClient  } = configureChains(
   [mainnet, bsc, polygon, optimism, arbitrum, base, zora, {...zkSync, iconUrl: '/assets/zksync.png'}],
   [publicProvider()]
 );
@@ -44,6 +44,7 @@ const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
   publicClient,
+  webSocketPublicClient
 });
 
 function MyApp({ Component, pageProps }) {
