@@ -283,7 +283,7 @@ function Heros() {
     };
   }, []);
 
-  console.log(data)
+  console.log(data, address)
 
   return (
     <>
