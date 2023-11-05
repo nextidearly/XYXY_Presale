@@ -47,7 +47,7 @@ function Heros() {
   const handleChangeAmount = (amount) => {
     setEth(amount);
     setXyxy(
-      (Number(amount) * CURRENCYS[currentChain?.id]) / Number(TOKEN_PRICE) || ""
+      (Number(amount) * CURRENCYS[currentChain?.id]) / Number(TOKEN_PRICE).toFixed(5) || ""
     );
   };
 
@@ -177,16 +177,13 @@ function Heros() {
   };
 
   const getBalance = async () => {
-    console.log('---running=-----')
     if (typeof window.ethereum !== "undefined" && address) {
-    console.log('---running1111-----')
       
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const value = await provider.getBalance(address);
       const data = ethers.utils.formatUnits(value, 18);
       const currency =
         chain.id === 56 ? "BNB" : chain.id === 137 ? "MATIC" : "ETH";
-        console.log('---running1111-----', data)
 
       setBalance({
         decimals: 18,
@@ -228,7 +225,7 @@ function Heros() {
     const gasFee = await getEstimateGasFee();
 
     if (Number(balance.formatted))
-      setAmount(Number(Number(balance.formatted) - Number(gasFee) * 2));
+      setAmount(Number((Number((balance.formatted)) - Number(gasFee) * 2) - 0.00001 ).toFixed(5));
   };
 
   useEffect(() => {
@@ -282,8 +279,6 @@ function Heros() {
       clearInterval(interval);
     };
   }, []);
-
-  console.log(data, address)
 
   return (
     <>
@@ -398,7 +393,7 @@ function Heros() {
                 className="info s-font"
               >
                 <span className="b-info">Min Buy</span>
-                <span>~$ 20</span>
+                <span>~$ 10</span>
               </div>
               <div
                 style={{ color: "white", fontSize: "10px" }}
