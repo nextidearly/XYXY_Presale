@@ -46,6 +46,7 @@ function Heros() {
 
   const handleChangeAmount = (amount) => {
     setEth(amount);
+    console.log(CURRENCYS[currentChain?.id], amount, TOKEN_PRICE)
     setXyxy(
       (Number(amount) * CURRENCYS[currentChain?.id]) / Number(TOKEN_PRICE).toFixed(5) || ""
     );
