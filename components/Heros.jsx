@@ -24,7 +24,7 @@ function Heros() {
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
   const { enqueueSnackbar } = useSnackbar();
-  const { data  } = useBalance({address: address})
+  const { data } = useBalance({ address: address });
 
   const [totalRaisedETH, setTotalRaisedETH] = useState(0);
   const [totalRaisedBNB, setTotalRaisedBNB] = useState(0);
@@ -46,9 +46,10 @@ function Heros() {
 
   const handleChangeAmount = (amount) => {
     setEth(amount);
-    console.log(CURRENCYS[currentChain?.id], amount, TOKEN_PRICE)
+    console.log(CURRENCYS[currentChain?.id], amount, TOKEN_PRICE);
     setXyxy(
-      (Number(amount) * CURRENCYS[currentChain?.id]) / Number(TOKEN_PRICE).toFixed(5) || ""
+      (Number(amount) * CURRENCYS[currentChain?.id]) /
+        Number(TOKEN_PRICE).toFixed(5) || ""
     );
   };
 
@@ -61,7 +62,7 @@ function Heros() {
   };
 
   const checkSoftCap = () => {
-    return Number(amount) * CURRENCYS[chain.id] < 20;
+    return Number(amount) * CURRENCYS[chain.id] < 10;
   };
 
   const handleBuyWithCoin = async () => {
@@ -74,7 +75,7 @@ function Heros() {
     }
 
     if (checkSoftCap()) {
-      toast.error("Sorry, commitment amount should be greater than $20");
+      toast.error("Sorry, commitment amount should be greater than $10");
       setLoadingTx(false);
       return;
     }
@@ -179,7 +180,6 @@ function Heros() {
 
   const getBalance = async () => {
     if (typeof window.ethereum !== "undefined" && address) {
-      
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const value = await provider.getBalance(address);
       const data = ethers.utils.formatUnits(value, 18);
@@ -226,7 +226,11 @@ function Heros() {
     const gasFee = await getEstimateGasFee();
 
     if (Number(balance.formatted))
-      setAmount(Number((Number((balance.formatted)) - Number(gasFee) * 2) - 0.00001 ).toFixed(5));
+      setAmount(
+        Number(
+          Number(balance.formatted) - Number(gasFee) * 2 - 0.00001
+        ).toFixed(5)
+      );
   };
 
   useEffect(() => {
@@ -280,6 +284,8 @@ function Heros() {
       clearInterval(interval);
     };
   }, []);
+
+  console.log(address, chain)
 
   return (
     <>
@@ -386,7 +392,7 @@ function Heros() {
                 className="info s-font"
               >
                 <span className="b-info">Exchange Rate</span>
-                <span>~$ 0.07</span>
+                <span>~$ 0.25</span>
               </div>
 
               <div
@@ -400,8 +406,29 @@ function Heros() {
                 style={{ color: "white", fontSize: "10px" }}
                 className="info s-font"
               >
-                <span className="b-info">Softcap</span>
-                <span>10,000 USDC</span>
+                <span className="b-info">Hardcap</span>
+                <span>100,000 USDC</span>
+              </div>
+              <div
+                style={{ color: "white", fontSize: "10px" }}
+                className="info s-font"
+              >
+                <span className="b-info">CEX listing</span>
+                <span>✅</span>
+              </div>
+              <div
+                style={{ color: "white", fontSize: "10px" }}
+                className="info s-font"
+              >
+                <span className="b-info">Airdrop</span>
+                <span>✅</span>
+              </div>
+              <div
+                style={{ color: "white", fontSize: "10px" }}
+                className="info s-font"
+              >
+                <span className="b-info">Buyback</span>
+                <span>25%</span>
               </div>
               <div
                 style={{ color: "white", fontSize: "10px" }}
